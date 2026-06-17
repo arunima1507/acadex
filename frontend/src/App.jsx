@@ -1,4 +1,5 @@
 import "./App.css";
+import FeatureCard from "./components/FeatureCard";
 
 function App() {
   return (
@@ -30,35 +31,28 @@ function App() {
         </div>
 
         <div className="row mt-5">
-
           <div className="col-md-4 mb-3">
-            <div className="feature-card p-4 h-100">
-              <div className="feature-icon">📚</div>
-              <h4>Student Records</h4>
-              <p>
-                Organize and manage student data efficiently.
-              </p>
-            </div>
+            <FeatureCard
+              icon="📚"
+              title="Student Records"
+              description="Organize and manage student data efficiently."
+            />
           </div>
 
           <div className="col-md-4 mb-3">
-            <div className="feature-card p-4 h-100">
-              <div className="feature-icon">📝</div>
-              <h4>Assignments</h4>
-              <p>
-                Create, track and monitor assignments easily.
-              </p>
-            </div>
+            <FeatureCard
+              icon="📝"
+              title="Assignments"
+              description="Create, track and monitor assignments easily."
+            />
           </div>
 
           <div className="col-md-4 mb-3">
-            <div className="feature-card p-4 h-100">
-              <div className="feature-icon">📊</div>
-              <h4>Analytics</h4>
-              <p>
-                Visualize attendance and academic performance.
-              </p>
-            </div>
+            <FeatureCard
+              icon="📊"
+              title="Analytics"
+              description="Visualize attendance and academic performance."
+            />
           </div>
 
         </div>

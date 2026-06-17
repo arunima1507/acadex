@@ -46,6 +46,37 @@ function Dashboard() {
 
       <div className="card p-4 mb-4">
 
+        <div className="row mb-4">
+
+            <div className="col-md-4 mb-3">
+                <div className="card shadow-sm border-0 p-4">
+                <h6>Total Students</h6>
+                <h2>{students.length}</h2>
+                </div>
+            </div>
+
+            <div className="col-md-4 mb-3">
+                <div className="card shadow-sm border-0 p-4">
+                <h6>Courses</h6>
+                <h2>
+                    {
+                    [...new Set(
+                        students.map(student => student.course)
+                    )].length
+                    }
+                </h2>
+                </div>
+            </div>
+
+            <div className="col-md-4 mb-3">
+                <div className="card shadow-sm border-0 p-4">
+                <h6>Active Records</h6>
+                <h2>{students.length}</h2>
+                </div>
+            </div>
+
+            </div>
+
         <h4>Add Student</h4>
 
         <input
@@ -89,26 +120,48 @@ function Dashboard() {
         {students.length === 0 ? (
           <p>No students added yet.</p>
         ) : (
-          students.map((student) => (
-            <div
-              key={student.id}
-              className="border rounded p-3 mb-3"
-            >
-              <h5>{student.name}</h5>
+          <table className="table table-hover">
+            <thead>
+                <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Course</th>
+                <th>Actions</th>
+                </tr>
+            </thead>
 
-              <p>{student.email}</p>
+            <tbody>
 
-              <p>{student.course}</p>
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => handleDeleteStudent(student.id)}
-              >
+                {students.map((student) => (
 
-                Delete
-                
-              </button>
-            </div>
-          ))
+                <tr key={student.id}>
+
+                    <td>{student.name}</td>
+
+                    <td>{student.email}</td>
+
+                    <td>{student.course}</td>
+
+                    <td>
+
+                    <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() =>
+                        handleDeleteStudent(student.id)
+                        }
+                    >
+                        Delete
+                    </button>
+
+                    </td>
+
+                </tr>
+
+                ))}
+
+            </tbody>
+
+            </table>
         )}
 
       </div>

@@ -29,6 +29,14 @@ function Dashboard() {
     setCourse("");
   };
 
+  const handleDeleteStudent = (id) => {
+    const updatedStudents = students.filter(
+        (student) => student.id !== id
+    );
+
+    setStudents(updatedStudents);
+};  
+
   return (
     <div className="container py-5">
 
@@ -91,6 +99,14 @@ function Dashboard() {
               <p>{student.email}</p>
 
               <p>{student.course}</p>
+              <button
+                className="btn btn-danger btn-sm"
+                onClick={() => handleDeleteStudent(student.id)}
+              >
+
+                Delete
+                
+              </button>
             </div>
           ))
         )}

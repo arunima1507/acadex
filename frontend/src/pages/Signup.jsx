@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
-import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
-
-  const handleLogin = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
+  const handleSignup = async () => {
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
@@ -19,13 +16,13 @@ function Login() {
       return;
     }
 
-    alert("Login Successful!");
-    navigate("/dashboard");
+    alert("Account created successfully!");
+    console.log(data);
   };
 
   return (
     <div>
-      <h1>Login</h1>
+      <h1>Signup</h1>
 
       <input
         type="email"
@@ -41,11 +38,11 @@ function Login() {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button onClick={handleLogin}>
-        Login
+      <button onClick={handleSignup}>
+        Create Account
       </button>
     </div>
   );
 }
 
-export default Login;
+export default Signup;

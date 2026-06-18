@@ -1,6 +1,7 @@
 import DashboardStat from "../components/DashboardStat";
 import { supabase } from "../lib/supabase";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
@@ -96,6 +97,12 @@ function Dashboard() {
     console.log(error);
 
   };
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        navigate("/login");
+    };
 
   return (
     <div className="container py-5">
@@ -103,6 +110,10 @@ function Dashboard() {
       <h1 className="mb-4">
         Acadex Dashboard
       </h1>
+
+        <button onClick={handleLogout}>
+            Logout
+        </button>
 
         <button
             onClick={testConnection}

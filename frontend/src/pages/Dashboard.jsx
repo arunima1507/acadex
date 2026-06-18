@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DashboardStat from "../components/DashboardStat";
 
 function Dashboard() {
 
@@ -7,27 +8,49 @@ function Dashboard() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [course, setCourse] = useState("");
+  const [editingId, setEditingId] = useState(null);
 
   const handleAddStudent = () => {
 
     if (!name || !email || !course) {
-      alert("Please fill all fields");
-      return;
+        alert("Please fill all fields");
+        return;
     }
 
-    const newStudent = {
-      id: Date.now(),
-      name,
-      email,
-      course,
-    };
+    if (editingId) {
 
-    setStudents([...students, newStudent]);
+        const updatedStudents = students.map((student) =>
+        student.id === editingId
+            ? {
+                ...student,
+                name,
+                email,
+                course,
+            }
+            : student
+        );
+
+        setStudents(updatedStudents);
+
+        setEditingId(null);
+
+    } else {
+
+        const newStudent = {
+        id: Date.now(),
+        name,
+        email,
+        course,
+        };
+
+        setStudents([...students, newStudent]);
+
+    }
 
     setName("");
     setEmail("");
     setCourse("");
-  };
+    };
 
   const handleDeleteStudent = (id) => {
     const updatedStudents = students.filter(
@@ -35,7 +58,14 @@ function Dashboard() {
     );
 
     setStudents(updatedStudents);
-};  
+};
+    const handleEditStudent = (student) => {
+    setName(student.name);
+    setEmail(student.email);    
+    setCourse(student.course);
+
+    setEditingId(student.id);
+    };
 
   return (
     <div className="container py-5">
@@ -49,30 +79,28 @@ function Dashboard() {
         <div className="row mb-4">
 
             <div className="col-md-4 mb-3">
-                <div className="card shadow-sm border-0 p-4">
-                <h6>Total Students</h6>
-                <h2>{students.length}</h2>
+                <DashboardStat
+                    title="Total Students"
+                    value={students.length}
+                />
                 </div>
-            </div>
 
-            <div className="col-md-4 mb-3">
-                <div className="card shadow-sm border-0 p-4">
-                <h6>Courses</h6>
-                <h2>
-                    {
+                <div className="col-md-4 mb-3">
+                <DashboardStat
+                    title="Courses"
+                    value={
                     [...new Set(
                         students.map(student => student.course)
                     )].length
                     }
-                </h2>
+                />
                 </div>
-            </div>
 
-            <div className="col-md-4 mb-3">
-                <div className="card shadow-sm border-0 p-4">
-                <h6>Active Records</h6>
-                <h2>{students.length}</h2>
-                </div>
+                <div className="col-md-4 mb-3">
+                <DashboardStat
+                    title="Active Records"
+                    value={students.length}
+                />
             </div>
 
             </div>
@@ -101,10 +129,10 @@ function Dashboard() {
         />
 
         <button
-          className="btn accent-btn"
-          onClick={handleAddStudent}
-        >
-          Add Student
+            className="btn accent-btn"
+            onClick={handleAddStudent}
+            >
+            {editingId ? "Update Student" : "Add Student"}
         </button>
 
       </div>
@@ -143,6 +171,13 @@ function Dashboard() {
                     <td>{student.course}</td>
 
                     <td>
+
+                    <button
+                        className="btn btn-warning btn-sm me-2"
+                        onClick={() => handleEditStudent(student)}
+                        >
+                        Edit
+                    </button>
 
                     <button
                         className="btn btn-danger btn-sm"

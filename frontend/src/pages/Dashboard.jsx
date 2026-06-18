@@ -1,5 +1,6 @@
-import { useState } from "react";
 import DashboardStat from "../components/DashboardStat";
+import { supabase } from "../lib/supabase";
+import { useState, useEffect } from "react";
 
 function Dashboard() {
 
@@ -9,6 +10,26 @@ function Dashboard() {
   const [email, setEmail] = useState("");
   const [course, setCourse] = useState("");
   const [editingId, setEditingId] = useState(null);
+
+  const fetchStudents = async () => {
+    const { data, error } = await supabase
+        .from("students")
+        .select("*");
+
+    console.log(data);
+    console.log(error);
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    setStudents(data);
+    };
+
+  useEffect(() => {
+    fetchStudents();
+    }, []);
 
   const handleAddStudent = () => {
 
@@ -67,12 +88,28 @@ function Dashboard() {
     setEditingId(student.id);
     };
 
+  const testConnection = async () => {
+
+    const { data, error } = await supabase.from("students").select("*");
+
+    console.log(data);
+    console.log(error);
+
+  };
+
   return (
     <div className="container py-5">
 
       <h1 className="mb-4">
         Acadex Dashboard
       </h1>
+
+        <button
+            onClick={testConnection}
+            className="btn btn-primary mb-3"
+            >
+            Test Database
+        </button>
 
       <div className="card p-4 mb-4">
 

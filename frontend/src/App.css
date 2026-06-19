@@ -57,3 +57,62 @@ body {
   font-size: 2rem;
   margin-bottom: 10px;
 }
+
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+
+  position: fixed;
+  left: 0;
+  top: 0;
+
+  background: #fff8f5;
+
+  border-right: 1px solid #ececec;
+
+  padding: 2rem 1rem;
+}
+
+.sidebar-logo {
+  color: #ff6b6b;
+
+  font-weight: 700;
+
+  margin-bottom: 2rem;
+}
+
+.sidebar-menu {
+  list-style: none;
+
+  padding: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 1rem;
+}
+
+.sidebar-menu a {
+  display: flex;
+
+  gap: 10px;
+
+  align-items: center;
+
+  text-decoration: none;
+
+  color: #444;
+
+  font-weight: 500;
+
+  padding: 12px;
+
+  border-radius: 10px;
+
+  transition: 0.3s;
+}
+
+.sidebar-menu a:hover {
+  background: #ff6b6b;
+
+  color: white;
+}

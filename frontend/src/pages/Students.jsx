@@ -30,7 +30,7 @@ function Students() {
         fetchStudents();
         }, []);
 
-    const handleAddStudent = () => {
+    const handleAddStudent = async () => {
 
         if (!name || !email || !course) {
             alert("Please fill all fields");
@@ -39,32 +39,47 @@ function Students() {
 
         if (editingId) {
 
-            const updatedStudents = students.map((student) =>
-            student.id === editingId
-                ? {
-                    ...student,
-                    name,
-                    email,
-                    course,
-                }
-                : student
-            );
+            console.log("Updating student:", editingId);
 
-            setStudents(updatedStudents);
+            const { error } = await supabase
+            .from("students")
+            .update({
+                name,
+                email,
+                course,
+            })
+            .eq("id", editingId);
+
+            console.log(error);
+
+            if (error) {
+            console.error(error);
+            alert("Failed to update student");
+            return;
+            }
+
+            fetchStudents();
 
             setEditingId(null);
-
         } else {
 
-            const newStudent = {
-            id: Date.now(),
-            name,
-            email,
-            course,
-            };
+            const { error } = await supabase
+                .from("students")
+                .insert([
+                    {
+                        name,
+                        email,
+                        course,
+                    },
+                ]);
 
-            setStudents([...students, newStudent]);
+            if (error) {
+                console.error(error);
+                alert(error.message);
+                return;
+            }
 
+            fetchStudents();
         }
 
         setName("");
@@ -72,12 +87,20 @@ function Students() {
         setCourse("");
     };
 
-    const handleDeleteStudent = (id) => {
-        const updatedStudents = students.filter(
-            (student) => student.id !== id
-        );
+    const handleDeleteStudent = async (id) => {
 
-        setStudents(updatedStudents);
+        const { error } = await supabase
+            .from("students")
+            .delete()
+            .eq("id", id);
+
+        if (error) {
+            console.error(error);
+            alert("Failed to delete student");
+            return;
+        }
+
+        fetchStudents();
     };
 
     const handleEditStudent = (student) => {

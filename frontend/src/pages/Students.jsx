@@ -9,6 +9,7 @@ function Students() {
     const [email, setEmail] = useState("");
     const [course, setCourse] = useState("");
     const [editingId, setEditingId] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const fetchStudents = async () => {
         const { data, error } = await supabase
@@ -111,6 +112,13 @@ function Students() {
         setEditingId(student.id);
     };
 
+    const filteredStudents = students.filter(
+    (student) =>
+        student.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
+
   return (
   <div className="container py-5">
 
@@ -161,6 +169,12 @@ function Students() {
       </h4>
 
       <hr />
+      <input
+            className="form-control mb-3"
+            placeholder="Search Student..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            />
 
       {students.length === 0 ? (
 
@@ -179,9 +193,10 @@ function Students() {
             </tr>
           </thead>
 
+
           <tbody>
 
-            {students.map((student) => (
+            {filteredStudents.map((student) => (
 
               <tr key={student.id}>
 

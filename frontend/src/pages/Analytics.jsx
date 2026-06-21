@@ -1,10 +1,15 @@
+
+import Sidebar from "../components/Sidebar";
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+
 function Analytics() {
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [assignments, setAssignments] = useState([]);
   
   const fetchAnalytics = async () => {
-
+    
     const { data: studentsData } =
       await supabase
         .from("students")
@@ -19,6 +24,10 @@ function Analytics() {
       await supabase
         .from("assignments")
         .select("*");
+
+    console.log("Students:", studentsData);
+    console.log("Attendance:", attendanceData);
+    console.log("Assignments:", assignmentsData);
 
     setStudents(studentsData || []);
     setAttendance(attendanceData || []);
@@ -49,6 +58,53 @@ function Analytics() {
     assignments.filter(
       assignment => assignment.status === "Pending"
     ).length;
+
+  const attendanceData = [
+    {
+      name: "Present",
+      value: presentCount,
+    },
+    {
+      name: "Absent",
+      value: attendance.length - presentCount,
+    },
+  ];
+
+  const assignmentData = [
+    {
+      name: "Completed",
+      value: completedAssignments,
+    },
+    {
+      name: "Pending",
+      value: pendingAssignments,
+    },
+    
+  ];
+
+  const attendanceChartData = {
+    labels: ["Present", "Absent"],
+    datasets: [
+      {
+        data: [
+          presentCount,
+          attendance.length - presentCount,
+        ],
+      },
+    ],
+  };
+
+  const assignmentChartData = {
+    labels: ["Completed", "Pending"],
+    datasets: [
+      {
+        data: [
+          completedAssignments,
+          pendingAssignments,
+        ],
+      },
+    ],
+  };
 
   return (
     <div className="container py-5">
@@ -90,6 +146,25 @@ function Analytics() {
           {" "}
           {pendingAssignments}
         </h4>
+
+        <hr />
+          <h3 className="mb-4">
+            Attendance Overview
+          </h3>
+
+          <div>
+            Present: {presentCount}
+          </div>
+
+          <hr />
+
+          <h3 className="mb-4">
+            Assignment Status
+          </h3>
+
+          <div>
+            Completed: {completedAssignments}
+          </div>
 
       </div>
 

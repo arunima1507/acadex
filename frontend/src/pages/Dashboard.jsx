@@ -7,23 +7,46 @@ import Sidebar from "../components/Sidebar";
 function Dashboard() {
 
   const [students, setStudents] = useState([]);
+  const [attendance, setAttendance] = useState([]);
+  const [assignments, setAssignments] = useState([]);
 
-  const fetchStudents = async () => {
-    const { data, error } = await supabase
-      .from("students")
-      .select("*");
+  const fetchDashboardData = async () => {
 
-    if (error) {
-      console.error(error);
-      return;
-    }
+    const { data: studentsData } =
+      await supabase
+        .from("students")
+        .select("*");
 
-    setStudents(data);
+    const { data: attendanceData } =
+      await supabase
+        .from("attendance")
+        .select("*");
+
+    const { data: assignmentsData } =
+      await supabase
+        .from("assignments")
+        .select("*");
+
+    setStudents(studentsData || []);
+    setAttendance(attendanceData || []);
+    setAssignments(assignmentsData || []);
   };
 
   useEffect(() => {
-    fetchStudents();
+    fetchDashboardData();
   }, []);
+
+  const presentCount = attendance.filter(
+    record => record.status === "Present"
+  ).length;
+
+  const attendanceRate =
+    attendance.length > 0
+      ? (
+          (presentCount / attendance.length) * 100
+        ).toFixed(1)
+      : 0;
+
 
   const testConnection = async () => {
 
@@ -47,46 +70,57 @@ function Dashboard() {
         Acadex Dashboard
       </h1>
 
-        <button onClick={handleLogout}>
-            Logout
-        </button>
-
         <button
-            onClick={testConnection}
-            className="btn btn-primary mb-3"
-            >
-            Test Database
+          onClick={handleLogout}
+          className="btn btn-danger mb-4"
+        >
+          Logout
         </button>
 
       <div className="card p-4 mb-4">
 
-        <div className="row mb-4">
+        <div className="row">
 
-            <div className="col-md-4 mb-3">
-                <DashboardStat
-                    title="Total Students"
-                    value={students.length}
-                />
-                </div>
-
-                <div className="col-md-4 mb-3">
-                <DashboardStat
-                    title="Courses"
-                    value={
-                    [...new Set(
-                        students.map(student => student.course)
-                    )].length
-                    }
-                />
-                </div>
-
-                <div className="col-md-4 mb-3">
-                <DashboardStat
-                    title="Active Records"
-                    value={students.length}
-                />
-            </div>
+          <div className="col-lg-3 col-md-6 mb-3">
+            <DashboardStat
+              title="Students"
+              value={students.length}
+            />
           </div>
+
+          <div className="col-lg-3 col-md-6 mb-3">
+            <DashboardStat
+              title="Attendance"
+              value={attendance.length}
+            />
+          </div>
+
+          <div className="col-lg-3 col-md-6 mb-3">
+            <DashboardStat
+              title="Assignments"
+              value={assignments.length}
+            />
+          </div>
+
+          <div className="col-lg-3 col-md-6 mb-3">
+            <DashboardStat
+              title="Attendance"
+              value={`${attendanceRate}%`}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="card p-4">
+          <h3>
+            Welcome to Acadex
+          </h3>
+
+          <p>
+            Manage students, attendance,
+            assignments and analytics
+            from a single dashboard.
+          </p>
+
       </div>
     </div>
   );

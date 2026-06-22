@@ -10,8 +10,10 @@ function Students() {
     const [course, setCourse] = useState("");
     const [editingId, setEditingId] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const fetchStudents = async () => {
+        setLoading(true);
         const { data, error } = await supabase
             .from("students")
             .select("*");
@@ -21,10 +23,12 @@ function Students() {
 
         if (error) {
             console.error(error);
+            setLoading(false);
             return;
         }
 
         setStudents(data);
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -119,6 +123,14 @@ function Students() {
         .includes(searchTerm.toLowerCase())
     );
 
+    if (loading) {
+    return (
+        <h3 className="text-center mt-5">
+        Loading...
+        </h3>
+    );
+    }
+
   return (
   <div className="container py-5">
 
@@ -176,9 +188,9 @@ function Students() {
             onChange={(e) => setSearchTerm(e.target.value)}
             />
 
-      {students.length === 0 ? (
+      {filteredStudents.length === 0 ? (
 
-        <p>No students added yet.</p>
+        <p>No students found.</p>
 
       ) : (
 

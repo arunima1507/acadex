@@ -9,8 +9,11 @@ function Attendance() {
   const [status, setStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const fetchAttendance = async () => {
+    setLoading(true);
+
     const { data, error } = await supabase
       .from("attendance")
       .select(`
@@ -22,10 +25,12 @@ function Attendance() {
 
     if (error) {
       console.error(error);
+      setLoading(false);
       return;
     }
 
     setAttendance(data);
+    setLoading(false);
   };
 
   const fetchStudents = async () => {
@@ -99,6 +104,14 @@ function Attendance() {
 
     return matchesSearch && matchesStatus;
   });
+
+  if (loading) {
+    return (
+      <h3 className="text-center mt-5">
+        Loading...
+      </h3>
+    );
+  }
 
   return (
     <div className="container py-5">
@@ -198,8 +211,8 @@ function Attendance() {
           Absent
         </option>
       </select>
-        
-      {attendance.length === 0 ? (
+
+      {filteredAttendance.length === 0 ? (
 
         <p>No attendance records found.</p>
 

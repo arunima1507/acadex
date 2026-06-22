@@ -11,8 +11,10 @@ function Assignments() {
   const [editingId, setEditingId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const fetchAssignments = async () => {
+    setLoading(true);
 
     const { data, error } = await supabase
       .from("assignments")
@@ -20,10 +22,12 @@ function Assignments() {
 
     if (error) {
       console.error(error);
+      setLoading(false);
       return;
     }
 
     setAssignments(data);
+    setLoading(false);
   };
 
   const handleSaveAssignment = async () => {
@@ -130,6 +134,14 @@ function Assignments() {
     }
   );
 
+  if (loading) {
+    return (
+      <h3 className="text-center mt-5">
+        Loading...
+      </h3>
+    );
+  }
+
   return (
     <div className="container py-5">
 
@@ -221,7 +233,7 @@ function Assignments() {
           </option>
         </select>
 
-        {assignments.length === 0 ? (
+        {filteredAssignments.length === 0 ? (
 
           <p>No assignments found.</p>
 

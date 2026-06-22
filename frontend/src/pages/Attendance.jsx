@@ -7,6 +7,8 @@ function Attendance() {
   const [studentId, setStudentId] = useState("");
   const [date, setDate] = useState("");
   const [status, setStatus] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const fetchAttendance = async () => {
     const { data, error } = await supabase
@@ -77,6 +79,27 @@ function Attendance() {
     fetchStudents();
   }, []);
 
+  const filteredAttendance = attendance.filter((record) => {
+    const student = students.find(
+      (s) => s.id === record.student_id
+    );
+
+    const studentName =
+      student?.name?.toLowerCase() || "";
+
+    const matchesSearch =
+      studentName.includes(
+        searchTerm.toLowerCase()
+      );
+
+    const matchesStatus =
+      statusFilter === ""
+        ? true
+        : record.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <div className="container py-5">
 
@@ -146,6 +169,36 @@ function Attendance() {
 
       <hr />
 
+      <input
+        type="text"
+        className="form-control mb-3"
+        placeholder="Search Student..."
+        value={searchTerm}
+        onChange={(e) =>
+          setSearchTerm(e.target.value)
+        }
+      />
+
+      <select
+        className="form-control mb-3"
+        value={statusFilter}
+        onChange={(e) =>
+          setStatusFilter(e.target.value)
+        }
+      >
+        <option value="">
+          All Status
+        </option>
+
+        <option value="Present">
+          Present
+        </option>
+
+        <option value="Absent">
+          Absent
+        </option>
+      </select>
+        
       {attendance.length === 0 ? (
 
         <p>No attendance records found.</p>

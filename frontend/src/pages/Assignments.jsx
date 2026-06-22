@@ -9,6 +9,8 @@ function Assignments() {
   const [dueDate, setDueDate] = useState("");
   const [status, setStatus] = useState("");
   const [editingId, setEditingId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const fetchAssignments = async () => {
 
@@ -109,6 +111,25 @@ function Assignments() {
     fetchAssignments();
   }, []);
 
+  const filteredAssignments = assignments.filter(
+    (assignment) => {
+
+      const matchesSearch =
+        assignment.title
+          .toLowerCase()
+          .includes(
+            searchTerm.toLowerCase()
+          );
+
+      const matchesStatus =
+        statusFilter === ""
+          ? true
+          : assignment.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    }
+  );
+
   return (
     <div className="container py-5">
 
@@ -170,6 +191,36 @@ function Assignments() {
 
         <hr />
 
+        <input
+          type="text"
+          className="form-control mb-3"
+          placeholder="Search Assignment..."
+          value={searchTerm}
+          onChange={(e) =>
+            setSearchTerm(e.target.value)
+          }
+        />
+
+        <select
+          className="form-control mb-3"
+          value={statusFilter}
+          onChange={(e) =>
+            setStatusFilter(e.target.value)
+          }
+        >
+          <option value="">
+            All Status
+          </option>
+
+          <option value="Pending">
+            Pending
+          </option>
+
+          <option value="Completed">
+            Completed
+          </option>
+        </select>
+
         {assignments.length === 0 ? (
 
           <p>No assignments found.</p>
@@ -190,7 +241,7 @@ function Assignments() {
 
             <tbody>
 
-              {assignments.map((assignment) => (
+              {filteredAssignments.map((assignment) => (
 
                 <tr key={assignment.id}>
 
